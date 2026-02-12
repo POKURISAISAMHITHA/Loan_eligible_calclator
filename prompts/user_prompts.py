@@ -1,6 +1,6 @@
 """
-Prompts and Templates Configuration
-All agent prompts, messages, and text templates
+User-Facing Prompts and Messages
+All templates, messages, and text that users will see
 """
 
 # Greeting Agent Templates
@@ -17,7 +17,7 @@ Best regards,
 Loan Verification Team"""
 }
 
-# Credit Analysis Messages
+# Credit Analysis User Messages
 CREDIT_ANALYSIS_MESSAGES = {
     "excellent_score": "Excellent credit score of {score:.0f}",
     "fair_score": "Fair credit score of {score:.0f}",
@@ -38,7 +38,7 @@ CREDIT_ANALYSIS_MESSAGES = {
     "analysis_template": "Applicant shows {details}. Risk level: {risk_level}."
 }
 
-# Employment Verification Messages
+# Employment Verification User Messages
 EMPLOYMENT_MESSAGES = {
     "verified_template": "Employment verified at {company} for {years} years",
     "unable_to_verify": "Unable to fully verify employment history",
@@ -55,7 +55,7 @@ EMPLOYMENT_MESSAGES = {
     "limited_tenure": "Limited employment tenure raises concerns"
 }
 
-# Collateral Assessment Messages
+# Collateral Assessment User Messages
 COLLATERAL_MESSAGES = {
     "value_statement": "Collateral value: ${value:,.2f}",
     
@@ -74,8 +74,9 @@ COLLATERAL_MESSAGES = {
     "insufficient_coverage": "Insufficient collateral coverage - high risk"
 }
 
-# Critique Agent Messages
+# Critique Agent User Messages
 CRITIQUE_MESSAGES = {
+    # Inconsistency Messages
     "low_risk_conflict_employment": "Low credit risk conflicts with concerning employment stability",
     "high_risk_excellent_employment": "High credit risk despite excellent employment history warrants investigation",
     "critical_high_risk_no_collateral": "Critical: High credit risk combined with insufficient collateral",
@@ -83,6 +84,7 @@ CRITIQUE_MESSAGES = {
     "all_passed_high_dti": "All verifications passed but DTI ratio is concerning",
     "all_failed_confirmed": "All verifications failed - confirms high-risk profile",
     
+    # Recommendation Messages
     "debt_consolidation": "Consider debt consolidation before reapplying",
     "credit_counseling": "Recommend credit counseling to improve credit profile",
     "reapply_after_employment": "Recommend reapplying after 1+ years of employment",
@@ -92,11 +94,12 @@ CRITIQUE_MESSAGES = {
     "manual_review": "Manual review recommended due to identified inconsistencies",
     "proceed_standard": "All verifications consistent - proceed with standard approval process",
     
+    # Summary Messages
     "consistent_summary": "All agent outputs are consistent and coherent. Confidence score: {confidence:.2%}. Credit: {risk} risk, Employment: {employment_status}, Collateral: {collateral_status}.",
     "inconsistencies_summary": "Found {count} inconsistency(ies) requiring attention. Confidence score: {confidence:.2%}. Recommend careful review of highlighted areas."
 }
 
-# Final Decision Messages
+# Final Decision User Messages
 DECISION_REASONING = {
     "approved_intro": "After comprehensive multi-agent analysis, the loan application has been approved with an overall risk score of {risk:.2%}.",
     "conditional_intro": "After comprehensive multi-agent analysis, the loan application has been conditionally approved with an overall risk score of {risk:.2%}.",
@@ -112,7 +115,7 @@ DECISION_REASONING = {
     "recommendations_header": "\n\nRecommendations:"
 }
 
-# Planner Agent Messages
+# Planner Agent User Messages
 PLANNER_MESSAGES = {
     "verification_plan": [
         "Step 1: Credit History Verification",
@@ -133,84 +136,27 @@ PLANNER_MESSAGES = {
     "duration_high": "5-7 minutes"
 }
 
-# Risk Level Thresholds and Labels
-RISK_THRESHOLDS = {
-    "credit_score": {
-        "excellent": 700,
-        "fair": 600,
-        "poor": 300
-    },
-    "repayment_score": {
-        "strong": 0.8,
-        "acceptable": 0.6,
-        "concerning": 0.0
-    },
-    "dti_ratio": {
-        "healthy": 0.36,
-        "moderate": 0.5,
-        "high": 1.0
-    },
-    "employment_years": {
-        "excellent": 5.0,
-        "good": 3.0,
-        "acceptable": 1.0,
-        "concerning": 0.0
-    },
-    "ltv_ratio": {
-        "standard": 0.80,
-        "acceptable": 0.90,
-        "high": 1.0
-    },
-    "risk_score": {
-        "low": 0.3,
-        "medium": 0.5,
-        "high": 1.0
-    }
+# Status Labels for UI
+STATUS_LABELS = {
+    "pending": "Pending Review",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "approved": "Approved",
+    "conditional": "Conditionally Approved",
+    "rejected": "Rejected"
 }
 
-# Credit Score Calculation Constants
-CREDIT_SCORE_PARAMS = {
-    "base_score": 500,
-    "repayment_max": 200,
-    "loan_penalty_per_loan": 15,
-    "loan_penalty_max": 100,
-    "income_ratio_multiplier": 50,
-    "income_component_max": 150,
-    "debt_burden_base": 100,
-    "debt_burden_multiplier": 10,
-    "score_min": 300,
-    "score_max": 850
+# Risk Level Labels for UI
+RISK_LABELS = {
+    "low": "Low Risk",
+    "medium": "Medium Risk",
+    "high": "High Risk"
 }
 
-# LTV Configuration
-LTV_CONFIG = {
-    "standard_ratio": 0.80,  # 80% LTV
-    "coverage_thresholds": {
-        "excellent": 1.2,
-        "acceptable": 1.0,
-        "marginal": 0.8,
-        "insufficient": 0.0
-    }
-}
-
-# Known Companies Database (for employment simulation)
-KNOWN_COMPANIES = {
-    "microsoft", "google", "amazon", "apple", "meta", "facebook",
-    "tesla", "nvidia", "intel", "ibm", "oracle", "salesforce",
-    "adobe", "netflix", "uber", "airbnb", "twitter", "linkedin",
-    "tech corp", "global solutions", "innovation labs", "digital systems",
-    "accenture", "deloitte", "pwc", "ey", "kpmg", "mckinsey",
-    "jp morgan", "goldman sachs", "morgan stanley", "citigroup"
-}
-
-# System Messages
-SYSTEM_MESSAGES = {
-    "processing_started": "Starting application processing: {app_id}",
-    "stage_greeting": "[{app_id}] Stage 1: Greeting",
-    "stage_planning": "[{app_id}] Stage 2: Planning",
-    "stage_verification": "[{app_id}] Stage 3: Parallel Verification",
-    "stage_critique": "[{app_id}] Stage 4: Critique",
-    "stage_decision": "[{app_id}] Stage 5: Final Decision",
-    "processing_complete": "[{app_id}] Processing complete: Decision={decision}, Risk={risk:.2%}",
-    "processing_error": "[{app_id}] Error processing application: {error}"
+# Verification Status Labels
+VERIFICATION_LABELS = {
+    "passed": "Passed ✓",
+    "failed": "Failed ✗",
+    "pending": "Pending...",
+    "in_progress": "In Progress..."
 }
