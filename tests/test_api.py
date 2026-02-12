@@ -23,7 +23,8 @@ class TestHealthEndpoint:
         
         data = response.json()
         assert data["status"] == "healthy"
-        assert "agents_ready" in data
+        assert "agents" in data
+        assert "database" in data
 
 
 class TestLoanApplicationEndpoint:
@@ -31,13 +32,13 @@ class TestLoanApplicationEndpoint:
     
     @pytest.mark.asyncio
     async def test_successful_application(self, sample_strong_application):
-        response = client.post("/apply", json=sample_strong_application)
+        response = client.post("/loan/apply", json=sample_strong_application)
         assert response.status_code == 200
         
         data = response.json()
         assert "application_id" in data
         assert "decision" in data
-        assert data["decision"] in ["APPROVED", "REJECTED", "CONDITIONAL"]
+        assert data["decision"] in ["Approved", "Rejected", "Conditional"]
     
     @pytest.mark.asyncio
     async def test_missing_fields(self):
@@ -47,7 +48,7 @@ class TestLoanApplicationEndpoint:
             # Missing required fields
         }
         
-        response = client.post("/apply", json=incomplete_app)
+        response = client.post("/loan/apply", json=incomplete_app)
         assert response.status_code == 422  # Validation error
 
 

@@ -9,23 +9,11 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from database import Database
-from models import LoanApplication
-from orchestrator import LoanOrchestrator
+from models import LoanApplicationRequest
 
 
-@pytest.fixture
-def test_db():
-    """Create a test database instance"""
-    db = Database(db_path=":memory:")  # In-memory database for testing
-    yield db
-    # Cleanup happens automatically with in-memory DB
-
-
-@pytest.fixture
-def orchestrator():
-    """Create a loan orchestrator instance"""
-    return LoanOrchestrator()
+# No need for database fixture since we're using the global db instance
+# No need for orchestrator fixture since we're using the global orchestrator instance
 
 
 @pytest.fixture
