@@ -9,6 +9,7 @@ from .employment_agent import EmploymentVerificationAgent
 from .collateral_agent import CollateralVerificationAgent
 from .critique_agent import CritiqueAgent
 from .final_decision_agent import FinalDecisionAgent
+from .testing_agent import TestingAgent
 
 __all__ = [
     "GreetingAgent",
@@ -17,5 +18,6 @@ __all__ = [
     "EmploymentVerificationAgent",
     "CollateralVerificationAgent",
     "CritiqueAgent",
-    "FinalDecisionAgent"
+    "FinalDecisionAgent",
+    "TestingAgent"
 ]
