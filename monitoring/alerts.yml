@@ -1,0 +1,144 @@
+groups:
+  - name: loan_approval_alerts
+    interval: 30s
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High error rate detected in {{ $labels.namespace }}"
+          description: "Error rate is {{ $value | humanizePercentage }} requests per second"
+          
+      # Slow response time
+      - alert: SlowResponseTime
+        expr: |
+          histogram_quantile(0.95, 
+            rate(http_request_duration_seconds_bucket[5m])
+          ) > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "Slow API response time"
+          description: "95th percentile response time is {{ $value }}s"
+      
+      # Pod crash looping
+      - alert: PodCrashLooping
+        expr: |
+          rate(kube_pod_container_status_restarts_total{
+            namespace="production",
+            pod=~"loan-approval.*"
+          }[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Pod {{ $labels.pod }} is crash looping"
+          description: "Pod has restarted {{ $value }} times in the last 15 minutes"
+      
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (container_memory_usage_bytes{
+            namespace="production",
+            pod=~"loan-approval.*"
+          } / 
+          container_spec_memory_limit_bytes{
+            namespace="production",
+            pod=~"loan-approval.*"
+          }) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.pod }}"
+          description: "Container memory usage is {{ $value | humanizePercentage }}"
+      
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          rate(container_cpu_usage_seconds_total{
+            namespace="production",
+            pod=~"loan-approval.*"
+          }[5m]) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.pod }}"
+          description: "Container CPU usage is {{ $value | humanizePercentage }}"
+      
+      # Low approval rate (business metric)
+      - alert: LowApprovalRate
+        expr: |
+          (
+            rate(loan_applications_total{decision="approved"}[1h]) /
+            rate(loan_applications_total[1h])
+          ) < 0.1
+        for: 30m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Unusually low approval rate"
+          description: "Approval rate is {{ $value | humanizePercentage }} (below 10%)"
+      
+      # No loan applications received
+      - alert: NoLoanApplications
+        expr: |
+          rate(loan_applications_total[30m]) == 0
+        for: 30m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "No loan applications received"
+          description: "No loan applications have been received in the last 30 minutes"
+      
+      # Database connection issues
+      - alert: DatabaseConnectionError
+        expr: |
+          increase(database_errors_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database connection errors detected"
+          description: "{{ $value }} database errors in the last 5 minutes"
+      
+      # API endpoint down
+      - alert: EndpointDown
+        expr: |
+          up{job="loan-approval-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Loan Approval API is down"
+          description: "The loan approval API has been unreachable for 2 minutes"
+      
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: |
+          (
+            node_filesystem_avail_bytes{mountpoint="/"} /
+            node_filesystem_size_bytes{mountpoint="/"}
+          ) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining"
